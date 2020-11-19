@@ -1,0 +1,33 @@
+#include<stdio.h>
+#include<string.h>
+typedef struct stdudent_info{
+	char name[10];
+	int score_1;
+	int score_2;
+	
+}ST;
+
+
+void insertData(ST *s,int N){
+	ST *p;
+	for(p=s;p<s+N;p++){
+		scanf("%s %d %d",p->name,&p->score_1,&p->score_2);
+	}
+}
+void printResult(ST *s,int N,int N1,int N2){
+	ST *p;
+	for(p=s;p<s+N;p++){
+		if(p->score_1<=N1||p->score_2<=N2){
+			
+			printf("%s %d %d\n",p->name,p->score_1,p->score_2);
+		}
+	}
+	
+}
+int main(void){
+	int n,N1,N2;
+	ST a[100];
+	scanf("%d %d %d",&n,&N1,&N2);
+	insertData(a,n);
+	printResult(a,n,N1,N2);
+}
