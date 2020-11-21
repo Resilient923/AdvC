@@ -1,0 +1,49 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+typedef struct job{
+	char *name;
+	char *start;
+	char *end;
+	int money;
+}ABC;
+
+int main(void){
+	ABC *p,*q,temp,*l;
+	int n,i,j,k;
+	char dataname[101];
+	char datastart[101];
+	char dataend[101];
+	scanf("%d",&n);
+	l = (ABC*)malloc(sizeof(ABC)*n);
+	if(l==NULL){
+		exit(1);
+	}
+	for(p=l;p<l+n;p++){
+		scanf("%s %s %s %d",dataname,datastart,dataend,&p->money);
+		p->name = (char*)malloc((strlen(dataname) + 1) * sizeof(char));//학생이름 동적할당 
+		strcpy(p->name,dataname);
+		p->start = (char*)malloc((strlen(datastart) + 1) * sizeof(char));//과목이름 동적할당
+		strcpy(p->start,datastart);
+		p->end = (char*)malloc((strlen(dataend) + 1) * sizeof(char));//과목이름 동적할당
+		strcpy(p->end,dataend);//동적할당 받은거에 넣기
+	}
+	for (p = l + n; p >= l; p--) {
+		for (q = l; q < p - 1; q++) {
+			if (q->start > (q + 1)->start) {
+				temp = *q;
+				*q = *(q + 1);
+				*(q + 1) = temp;
+			}
+		}
+	}
+	p=l+1;
+	printf("%s %s %s %d",p->name, p->start, p->end, p->money);
+	for (p = l; p < l + n; p++) {//할당한 메모리 해제
+		free(p->name);
+		free(p->start);
+		free(p->end);
+	}
+	free(l);
+	
+}
