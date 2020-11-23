@@ -1,0 +1,38 @@
+#include<stdio.h>
+int main()
+{
+	int ar[6], * p, * q, uni[6], * r = uni, n = 0, cnt, flag = 0; // 변수 선언
+	
+	for (p = ar; p < ar + 6; p++) // 6번 반복
+		scanf("%d", p);	// ar의 값 입력
+	
+	for (p = ar; p < ar + 6; p++){ // 6번 반복
+		for (q = ar; q < ar + 6; q++){ // 6번 반복
+			if (*p == *q) // 같으면 반복문 탈출
+				break;
+			
+		}
+		if (p == q) { // p와 q가 주소가 같다면    
+			*r = *p; // uni에 p의 값 대입               uni배열의 첫번째 원소는 포인터r 
+			r++;  // r의 주소 한칸 이동
+			n++;  // n의 값(중복된 숫자의 갯수) 1 증가 
+		}
+	}
+	for (p = uni; p < uni + n; p++){ // n번 반복
+	
+		cnt = 0;  // cnt 0으로 초기화
+		for (q = ar; q < ar + 6; q++){  // 6번 반복  q는 입력된 수들중에 uni랑 같은거 있는지 확인  
+		
+			if (*p == *q)  // p의 값과 q의 값이 같으면 cnt값 1 증가 (중복된거 갯수 카운트) 
+				cnt++;
+		}
+		if (cnt > 1){  // cnt가 1보다 크면
+		
+			flag = 1;  // flag 1로 바꾸고
+			printf("%d %d\n", *p, cnt); // 결과 출력 (( p는 중복된거 들어가있는 uni의 인자 ))  
+		}
+	}
+	if (flag==0) // flag가 0이면 //중복된거 없다는 소리임 
+		printf("0"); // 0 출력
+	return 0; // 프로그램 종료
+}
