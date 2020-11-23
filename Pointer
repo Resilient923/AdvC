@@ -1,0 +1,48 @@
+#include<stdio.h>
+int MAX(int ar[]){
+	int *p;
+	int max=*ar;
+	for(p=ar;;p++){
+		if(*p != 0){
+			if(max<*p){
+				max = *p;
+			}
+		}else{
+			break;
+		}
+	}
+	return max;
+	
+} 
+int MIN(int ar[]){
+	int *p;
+	int min=*ar;
+	for(p=ar;;p++){
+		if(*p!=0){
+			if(min>*p){
+				min = *p;
+				
+			}
+		}else{
+			break;
+		}
+	}
+	return min;
+}
+
+int main(void){
+	int n,i,num,*p;
+	int ar[100];
+	scanf("%d",&n);
+	for (i = 0; i < n; i++) {//n회 반복
+		p = ar; //포인터p가 항상 ar[0]부터 시작하도록
+		do {
+			scanf("%d", &num);
+			*p = num;
+			p++;
+		} while (num != 0); //ar[]가 0일떄 종료
+
+		printf("%d %d\n", MAX(ar),MIN(ar));
+	}
+	
+}
