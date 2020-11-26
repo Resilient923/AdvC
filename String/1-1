@@ -1,0 +1,71 @@
+#include<stdio.h>
+#include<string.h>
+int main(void){
+	int len,n,i=0,j,k,num=0,flag;
+	char A[21],tmp;
+	gets(A);
+	
+	scanf("%d",&n);
+	len = strlen(A);
+	while(A[i]){
+		
+		if(A[i]>='A'&&A[i]<='Z'){
+			A[i] += n;
+		}
+		else if(A[i]>='a'&&A[i]<='z'){
+			A[i] -= n;
+		}
+		else if(A[i]>='0'&&A[i]<='9'){
+			if(A[i+1]>='0'&&A[i+1]<='9'){//두자리수일때 
+				num = (A[i]-'0')*10+A[i+1]-'0';
+				flag=2;//두자리수 
+			}
+			else{
+				num = A[i]-'0';
+				flag=1;
+			}
+			tmp = 'A'+num-1;
+			if(flag==1){//한자리수이면 
+				len += n-1;
+				for (j = 0; j < n - 1; j++) { //한칸씩 뒤로 미뤄서 n번의 숫자 번째의 알파벳 대문자가 들어갈 자리 마련
+					for (k = len; k >= i + 1; k--) {
+						A[k + 1] = A[k];
+					}
+				}
+				for (j = 0; j < n; j++) {//해당 숫자 번째의 알파벳 대문자 n번 반복
+					A[i + j] = tmp;
+				}
+				i += n - 1;//i의 위치도 변경.
+			}
+			else if(flag==2){//두자리수이면 
+				if(n==1){//n이 1이면 자리수 하나를 줄여줘야한다 
+					len -= n;
+					for (j = i + 1; j < len; j++) {//앞으로 땡김
+						A[j] = A[j + 1];
+					}
+					A[i] = tmp;
+				} 
+				else {
+					len += n - 2;//문자열의 길이가 n-2개 늘어남
+					for (j = 0; j < n - 2; j++) {//한칸씩 뒤로 미뤄서 n번의 숫자 번째의 알파벳 대문자가 들어갈 자리 마련
+						for (k = len; k >= i + 1; k--) {
+							A[k + 1] = A[k];
+						}
+					}
+					for (j = 0; j < n; j++) {//해당 숫자 번째의 알파벳 대문자 n번 반복
+						A[i + j] = tmp;
+					}
+					i += n - 1;//i의 위치도 변경. 아래 i++이 있으니 주의
+				}
+			}
+			
+		}
+		else{
+			A[i] = ' ';
+		}
+		i++;	
+		
+	}
+	printf("%s",A);
+	
+}
