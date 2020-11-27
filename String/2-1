@@ -1,0 +1,21 @@
+#include<stdio.h>
+#include<string.h>
+int main(void){
+	int i,j,k,len;
+	char word[100],tmp;
+	
+	scanf("%s",word);
+	len = strlen(word);
+	for(i=0;i<len;i++){
+		for(j=i;j<len;j++){
+			if(word[i]>word[j]){
+				tmp = word[i];
+				word[i] = word[j];
+				word[j] = tmp;
+			}
+		}
+	}
+	printf("%s",word);
+	
+	return 0;
+}
