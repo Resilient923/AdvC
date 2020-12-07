@@ -1,0 +1,304 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct TreeNode{
+	int data;
+	struct TreeNode *left, *right;
+}TreeNode;
+
+TreeNode* search(TreeNode * node,int key){//탐색함수 
+	if(node==NULL){
+		return NULL;
+	} 
+	if(node->key == key){
+		return node;
+	}
+	else if(node->key > key){
+		return search(node->left,key);
+	}
+	else{
+		return search(node->right,key);
+	}
+
+}
+
+
+TreeNode *make_node(int data,TreeNode *left,TreeNode *right){ //노드를 만든다 
+	TreeNode *temp = (TreeNode*)malloc(sizeof(TreeNode));
+	temp->data = data;
+	temp->left = left;
+	temp->right = right;
+	return temp;
+} 
+
+int get_node_count(TreeNode *node){ //노드의 개수 
+	int count= 0;
+	
+	if(node != NULL){
+		count = 1+get_node_count(node->left) +get_node_count(node->right);
+		return count;
+	}
+	
+}
+
+int get_leaf_count(TreeNode *node){//단일노드 
+	int count = 0;
+	if(node != NULL){
+		if(node->left == NULL && node->right == NULL){
+			return 1;
+		}else{
+			count = get_leaf_count(node->left)+get_leaf_count(node->right);
+		}
+	}
+	return count;
+	
+} 
+
+int get_height(TreeNode *node){//트리의 높이 
+	int height = 0;
+	if(node!=NULL){
+		height = 1 + max(get_height(node->left),get_height(node->right));
+	}
+	return height;
+
+}
+
+void inorder(TreeNode *root){
+	
+	if(root){
+		inorder(root->left);
+		printf("[%d]",root->data);
+		inorder(root->right);
+	}
+}
+
+void main(){//주어진 그래프 
+	
+	TreeNode *n1 = make_node(10,NULL,NULL);
+	TreeNode *n2 = make_node(15,n1,NULL);
+	TreeNode *n3 = make_node(22,NULL,NULL);
+	TreeNode *n4 = make_node(35,n3,NULL);
+	TreeNode *n5 = make_node(95,NULL,NULL);
+	TreeNode *n6 = make_node(93,n4,n5);
+	TreeNode *root = make_node(17,n2,n6);
+	
+	printf("노드의 수 : %d\n",get_node_count(root));
+	printf("단만 노드의 수 : %d\n",get_leaf_count(root));
+	printf("트리의 높이 : %d\n",get_height(root));
+}
+-----------------------------------------------
+#include<stdio.h>//삽입,삭제 알고리즘 2진탐색트리 
+#include<stdlib.h>
+#include<time.h>
+
+typedef struct TreeNode{
+	int key;
+	struct TreeNode*left,*right;
+	
+}TreeNode;
+
+TreeNode* search(TreeNode*node,int key){
+	if(node==NULL){
+		return NULL;
+	}
+	if(node->key == key){
+		return node;
+	}
+	else if(node->key > key){
+		return search(node->left,key);
+	}
+	else{
+		return search(node->right,key);
+	}
+} 
+
+TreeNode* insertNode(TreeNode*node,int key){//삽입함수 
+	if(node == NULL){
+		TreeNode *temp = (TreeNode*)malloc(sizeof(TreeNode));
+		temp->key = key;
+		temp->left = temp->right =NULL;
+		return temp;
+	}
+	if(key < node->key){
+		node->left = insertNode(node->left,key);
+	}else if(key > node->key){
+		node->right = insertNode(node->right,key);
+	}
+	return node;
+}
+
+TreeNode* minValueNode(TreeNode* root){
+	TreeNode *p = root;
+	while(p->left != NULL){
+		p = p->left;
+	}
+	return p;
+}
+
+
+TreeNode* deleteNode(TreeNode* root,int key){//삭제함수 
+	if(root==NULL){
+		return root;
+	}
+	if(key < root->key){
+		root->left = deleteNode(root->left,key);
+	}
+	else if(key > root->key){
+		root->right = deleteNode(root->right,key);
+	}
+	else{
+		if(root->left == NULL){
+			TreeNode *temp = root->right;
+			free(root);
+			return temp;
+		}
+		else if(root->right == NULL){
+			TreeNode *temp = root->left;
+			free(root);
+			return temp;
+		}
+		else{
+			TreeNode *temp = minValueNode(root->right);
+			root->key = temp->key;
+			root->right = deleteNode(root->right,temp->key);
+		}
+	}
+	return root;
+}
+
+
+void preOrder(TreeNode  *root){
+	if(root){
+		printf("[%d] ",root->key);
+		preOrder(root->left);
+		preOrder(root->right); 	 
+	}
+}
+
+void main(){
+	TreeNode* root = NULL;
+	
+	root = insertNode(root,35);
+	root = insertNode(root,68);
+	root = insertNode(root,99);
+	root = insertNode(root,18);
+	root = insertNode(root,7);
+	root = insertNode(root,3);
+	root = insertNode(root,12);
+	root = insertNode(root,26);
+	root = insertNode(root,22);
+	root = insertNode(root,30);
+	
+	preOrder(root);
+	printf("\n\n");
+	  
+	 if(search(root,18) != NULL){
+	 	printf("이진탐색트리에서 18을 발견함\n");
+	 	deleteNode(root,18);
+	 }else{
+		printf("이진탐색트리에서 18을 발견못함\n");
+	}
+	preOrder(root);
+	printf("\n\n");
+	
+}*/
+--------------------------------------------------------------
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+typedef struct AVLNode {
+	int key;
+	struct AVLNode* left;
+	struct AVLNode* right;
+}AVLNode;
+
+AVLNode* rotate_right(AVLNode* parent) {
+	AVLNode* child = parent->left;
+	parent->left = child->right;
+	child->right = parent;
+	return child;
+}
+
+AVLNode* rotate_left(AVLNode* parent) {
+	AVLNode* child = parent->right;
+	parent->right = child->left;
+	child->left = parent;
+	return child;
+}
+
+int get_height(AVLNode* node) {
+	int height = 0;
+	if (node != NULL) {
+		height = 1 + max(get_height(node->left), get_height(node->right));
+	}
+	return height;
+}
+
+int get_balance(AVLNode* node) {
+	if (node == NULL) {
+		return 0;
+	}
+	return get_height(node->left) - get_height(node->right);
+}
+
+AVLNode* create_node(int key) {
+	AVLNode* node = (AVLNode*)malloc(sizeof(AVLNode));
+	node->key = key;
+	node->left = node->right = NULL;
+	return node;
+}
+
+AVLNode* insert(AVLNode* node, int key) {
+	if (node == NULL) {
+		return create_node(key);
+	}
+	if (key < node->key) {
+		node->left = insert(node->left, key);
+	}
+	else if (key > node->key) {
+		node->right = insert(node->right, key);
+	}
+	else {
+		return node;
+	}
+	int balance = get_balance(node);
+
+	if (balance > 1 && key < node->left->key) {//LL TYPE
+		return rotate_right(node);
+	}
+	if (balance < -1 && key > node->right->key) {//RR TYPE
+		return rotate_left(node);
+	}
+	if (balance > 1 && key > node->left->key) {//LR TYPE
+		node->left = rotate_left(node->left);
+		return rotate_right(node);
+	}
+	if (balance < -1 && key < node->right->key) {//RL TYPE
+		node->right = rotate_right(node->right);
+		return rotate_left(node);
+	}
+	return node;
+}
+
+
+
+void preorder(AVLNode* root) {
+	if (root != NULL) {
+		printf("[%d]", root->key);
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
+void main() {
+	int i;
+	AVLNode* root = NULL;
+	srand(time(NULL));
+	for (i = 0; i < 10; i++) {
+		int key = rand() % 100;
+		root = insert(root, key);
+	}
+	printf("\n전위 순회 결과\n");
+	preorder(root);
+	printf("\n");
+}
