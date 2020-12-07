@@ -1,0 +1,327 @@
+/*#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+
+#define MAX_VERTICES 50
+
+typedef struct{
+	int n;
+	int adj_mat[MAX_VERTICES][MAX_VERTICES];
+	
+}GraphType;
+
+void init(GraphType *g){   //행렬 사용한그래프 
+	int row,col;
+	g->n = 0;
+	for(row =0;row<MAX_VERTICES;row++){
+		for(col=0;col<MAX_VERTICES;col++){
+			g->adj_mat[row][col] = 0;
+		}
+	}
+}
+
+void insert_vertex(GraphType* g){
+	
+	if((g->n+1)>MAX_VERTICES){
+		printf("정점을 추가할수 없습니다\n");
+		return;	
+	}
+	g->n++;
+}
+
+void insert_edge(GraphType *g,int start,int end){
+	
+	if((start >= g->n)||(end>=g->n)){
+		printf("간선을 추가할수 없습니다\n");
+		return;	
+	}
+	g->adj_mat[start][end]=1;
+	g->adj_mat[end][start]=1;
+}
+
+void print_adj_mat(GraphType *g){
+	int row;
+	int col;
+	for(row=0;row<g->n;row++){
+		printf("|");
+		for(col=0;col<g->n;col++){
+			printf(" %d ",g->adj_mat[row][col]);
+		}
+		printf("|\n");
+	}
+}
+
+int main(){
+	 int i;
+	 GraphType g;
+	 init(&g);
+	 for(i=0;i<4;i++){
+	 	insert_vertex(&g);
+	 }
+	 insert_edge(&g,0,1);
+	 insert_edge(&g,0,2);
+	 insert_edge(&g,0,3);
+	 insert_edge(&g,1,2);
+	 insert_edge(&g,2,3);
+	 
+	 print_adj_mat(&g);
+}*/
+ //레포트 문제 
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX_VERTICES 50
+
+typedef struct GraphNode{
+	int vertex;
+	int weight;
+	struct GraphNode *link;
+}GraphNode;
+
+typedef struct{
+	int n;
+	GraphNode *adj_list[MAX_VERTICES];
+}GraphType;
+
+void init(GraphType *g){
+	g->n = 0;
+	int v;
+	for(v=0;v<MAX_VERTICES;v++){
+		g->adj_list[v] = NULL;
+	}
+}
+
+void insert_vertex(GraphType *g,int v){
+	
+	if(((g->n)+1)>MAX_VERTICES){
+		printf("정점을 추가할수없습니다\n");
+		return;
+	}
+	g->n++;
+	
+}
+
+void insert_edge(GraphType *g,int u,int v,int w ){
+		if(u>=g->n||v>=g->n){
+			printf("간선을 추가할수없습니다");
+			return;
+		}
+	GraphNode *node1 = (GraphNode *)malloc(sizeof(GraphNode));
+	node1->vertex = v;
+	node1->weight = w;
+	node1->link = g->adj_list [u];
+	g->adj_list[u] = node1;
+	
+	GraphNode *node2 = (GraphNode *)malloc(sizeof(GraphNode));
+	node2->vertex = u;
+	node2->weight = w;
+	node2->link = g->adj_list[v];
+	g->adj_list[v] = node2;
+}
+
+
+void print_adj_list(GraphType *g){
+	int i;
+	for(i=0;i<g->n;i++){
+		GraphNode *p = g->adj_list[i];
+		printf("정점 %d의 인접리스트",i+1);
+		while(p != NULL){
+			printf("[%d (%d)]",p->vertex,p->weight);
+			p = p->link;
+		}
+		printf("\n");
+	}
+	
+}
+
+void process(GraphType *g,int num){
+	GraphNode *p = g->adj_list[num];
+	while(p !=NULL){
+		printf("[%d (%d)]",p->vertex,p->weight);
+		p=p->link;
+	}
+	printf("\n");
+	
+}
+
+void process2(GraphType *g,int u,int v,int w){
+	GraphNode *p = g->adj_list[u];
+	while(p!=NULL){
+		if(p->vertex==v){
+			p->weight = w;
+			return;
+		}
+		else{
+			p = p->link;
+		}
+	}
+}
+
+void main(void){
+	int i;
+	GraphType g;
+	char cmd;
+	int num,u,v,w;
+	init(&g);
+	for(i=0;i<6;i++){
+		insert_vertex(&g,i); 
+	}
+	insert_edge(&g,4,5,3);
+	insert_edge(&g,2,4,4);
+	insert_edge(&g,1,2,1);
+	insert_edge(&g,0,5,2);
+	insert_edge(&g,0,3,1);
+	insert_edge(&g,0,2,1);
+	insert_edge(&g,0,1,1);
+	
+	print_adj_list(&g);
+	
+	while(1){
+		scanf("%c",&cmd);
+		switch(cmd){
+			case'a':
+				scanf("%d",&num);
+				process(&g,num);
+				break;
+			case'm':
+				scanf("%d %d %d",&u,&v,&w);
+				process2(&g,u,v,w);
+				break;
+			case'q':
+				return 0;
+		}
+		
+	}
+	
+	getch();
+	
+
+
+}
+                                   //인접리스트 방식 노드 연결 하나씩되어있을때 
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX_VERTICES 50
+
+typedef struct GraphNode{
+	int vertex;
+	struct GraphNode *link;
+}GraphNode;
+
+typedef struct{
+	int n;
+	GraphNode *adj_list[MAX_VERTICES];
+}GraphType;
+
+void init(GraphType *g){
+	g->n = 0;
+	int v;
+	for(v=0;v<MAX_VERTICES;v++){
+		g->adj_list[v] = NULL;
+	}
+}
+
+void insert_vertex(GraphType *g,int v){
+	
+	if(((g->n)+1)>MAX_VERTICES){
+		printf("정점을 추가할수없습니다\n");
+		return;
+	}
+	g->n++;
+	
+}
+
+void insert_edge(GraphType *g,int u,int v){
+		if(u>=g->n||v>=g->n){
+			printf("간선을 추가할수없습니다");
+			return;
+		}
+	GraphNode *node1 = (GraphNode *)malloc(sizeof(GraphNode));
+	node1->vertex = v;
+	node1->link = g->adj_list [u];
+	g->adj_list[u] = node1;
+	
+	
+}
+
+
+void print_adj_list(GraphType *g){
+	int i;
+	for(i=0;i<g->n;i++){
+		GraphNode *p = g->adj_list[i];
+		printf("정점 %d의 인접리스트",i+1);
+		while(p != NULL){
+			printf("-> %d",p->vertex);
+			p = p->link;
+		}
+		printf("\n");
+	}
+	
+}
+
+void main(void){
+	int i;
+	GraphType g;
+	char cmd;
+	int num,u,v,w;
+	init(&g);
+	for(i=0;i<6;i++){
+		insert_vertex(&g,i); 
+	}
+	insert_edge(&g,0,1);
+	insert_edge(&g,1,0);
+	insert_edge(&g,0,2);
+	insert_edge(&g,2,0);
+	insert_edge(&g,0,3);
+	insert_edge(&g,3,0);
+	insert_edge(&g,1,2);
+	insert_edge(&g,2,1);
+	insert_edge(&g,2,3);
+	insert_edge(&g,3,2);
+	
+	print_adj_list(&g);
+	
+	
+	
+
+
+}
+//-------------------------------------기본틀 
+/*typedef strcut Edge{
+	int endpoint;
+	char vertex1,vertex2;
+}Edge;
+
+typedef struct Vertext{
+	char name;
+}Vertex;
+
+typedef struct Graph{
+	Vertex vertex[8];
+	Edge edge[22];
+	int adjacencyMatrix[8][8]; 
+}Graph;
+
+
+void init(Graph* graph){
+	int i;
+	for(i=0;i<MAX;i++){
+		graph->vertex[i].name = i +'1';
+		
+	}
+	memset(graph->edge,-1,sizeof(graph->edge));
+	memset(graph->adjacencyMatrix,-1,sizeof(graph->adjacencyMatrix));
+	
+	graph->edge[0].endpoint = 1;
+	graph->edge[0].vertex1 = '1';
+	graph->edge[0].vertex2 = '2';
+	graph->adjacencyMatrix[0][1] = 0;
+	graph->adjacencyMatrix[1][0] = 0;
+}
+
+void main(){
+	
+	Graph*graph = (Graph*)malloc(sizeof(Graph));
+	memset(graph,0,sizeof(Graph));
+	
+	init(graph);
+}*/
