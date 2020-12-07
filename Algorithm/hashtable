@@ -1,0 +1,229 @@
+/*#include<stdio.h>//해쉬테이블 (선형조사법) 
+#include<stdlib.h>
+#include<string.h>
+
+#define TABLE_SIZE 13
+
+typedef struct{
+	char key[20];
+	char value[100];
+	
+}Record;
+
+void init_table(Record ht[]){
+	int i;
+	for(i =0;i<TABLE_SIZE;i++){
+		ht[i].key[0] = ht[i].value[0] = NULL;
+	}
+}
+
+int transform(char*key){
+	int number =0;
+	while(*key != NULL){
+		number = number + *key++;
+	return number;
+	}
+}
+
+int hash_function(char *key){
+	return 11- (transform(key) % 11);
+}
+
+void insert_record(Record ht[], char* key, char* value){
+	int i,hash_value;
+	hash_value = i = hash_function(key);
+	while(ht[i].key[0] != NULL){
+		if(strcmp(ht[i].key,key)==0){
+			printf("[%s] 탐색키가 중복되었습니다\n",key);
+			return;
+		}
+		i = (i+1) % TABLE_SIZE;
+		if(i==hash_value){
+			printf("테이블이 가득찼습니다.\n");
+			return;
+		}
+	}
+	strcpy(ht[i].key,key);
+	strcpy(ht[i].value,value);
+}
+
+void insert_record_double(Record ht[], char* key, char* value){
+	int i,hash_value;
+	hash_value = i = hash_function(key);
+	while(ht[i].key[0] != NULL){
+		if(strcmp(ht[i].key,key)==0){
+			printf("[%s] 탐색키가 중복되었습니다\n",key);
+			return;
+		}
+		i = (i+1) % TABLE_SIZE;
+		if(i==hash_value){
+			printf("테이블이 가득찼습니다.\n");
+			return;
+		}
+	}
+	strcpy(ht[i].key,key);
+	strcpy(ht[i].value,value);
+}
+
+void insert_record_qp(Record ht[], char* key, char* value){//2차조사법 
+	int i,hash_value,inc=0;
+	hash_value = i = hash_function(key);
+	while(ht[i].key[0] != NULL){
+		if(strcmp(ht[i].key,key)==0){
+			printf("[%s] 탐색키가 중복되었습니다\n",key);
+			return;
+		}
+		i = (hash_value+inc*inc) % TABLE_SIZE;
+		inc = inc +1;
+		if(i==hash_value){
+			printf("테이블이 가득찼습니다.\n");
+			return;
+		}
+	}
+	strcpy(ht[i].key,key);
+	strcpy(ht[i].value,value);
+}
+
+Record* search_record(Record ht[], char*key){
+	int i,hash_value;
+	hash_value = i = hash_function(key);
+	while(ht[i].key[0] != NULL){
+		if(strcmp(ht[i].key,key)==0){
+			printf("[%8s] 탐색성공 인덱스 [%2d]   %10s= %s\n\n",key,i,ht[i].key,ht[i].value);
+			return hash_value +i;
+		}
+		i = (i+1) % TABLE_SIZE;
+		if(i==hash_value){
+			break;
+		}
+	}
+	printf("[%8s] 탐색 실패\n",key);
+	return NULL;
+}
+
+
+void print_table(Record ht[]){
+	int i;
+	for(i=0;i<TABLE_SIZE;i++){
+		printf("[%2d] %10s %s\n",i,ht[i].key,ht[i].value);
+	}
+}
+
+void main(){  
+	Record hash_table[TABLE_SIZE];
+	init_table(hash_table);
+	
+	insert_record(hash_table,"do","반복");
+	insert_record(hash_table,"for","반복");
+	insert_record(hash_table,"if","분기");
+	insert_record(hash_table,"case","분기");
+	insert_record(hash_table,"else","분기");
+	insert_record(hash_table,"return","반환");
+	insert_record(hash_table,"function","함수");
+	print_table(hash_table);
+	printf("\n");
+	getchar();
+	
+	search_record(hash_table,"return");
+	search_record(hash_table,"function");
+	search_record(hash_table,"class");
+	
+}
+--------------------------------------------------------------*/
+#include<stdio.h>//해쉬테이블
+#include<string.h>
+#include<stdlib.h>
+
+#define TABLE_SIZE 13
+
+typedef struct Node{//Record를 Node로 구성 
+	char key[20];
+	char value[100];
+	struct Node* link;	
+}Node;
+
+void init_table(Node* ht[]){
+	int i;
+	for(i =0;i<TABLE_SIZE;i++){
+		ht[i] = NULL;
+	}
+}
+
+int transform(char*key){
+	int number =0;
+	while(*key != NULL){
+		number = number + *key++;
+	return number;
+	}
+}
+
+int hash_function(char *key){
+	return transform(key) % TABLE_SIZE;
+}
+
+void insert_node(Node *ht[], char* key, char* value){
+	Node *p;
+	int hash_value = hash_function(key);
+	
+	for(p=ht[hash_value]; p!=NULL;p=p->link){
+		if(strcmp(p->key,key)==0){
+			printf("탐색키중복\n");
+			return;
+		}
+	}
+	p = (Node*)malloc(sizeof(Node));
+	strcpy(p->key,key);
+	strcpy(p->value,value);
+	p->link = ht[hash_value];
+	ht[hash_value] = p;
+}
+
+
+void search_node(Node* ht[], char*key){
+	Node *p;
+	int hash_value = hash_function(key);
+	
+	for(p=ht[hash_value]; p!=NULL;p=p->link){
+		if(strcmp(p->key,key)==0){
+			printf("[%8s]탐색성공 인덱스[%2d]   %10s = %s\n",key,hash_value,p->key,p->value);
+			return;
+		}
+	}
+	printf("[%8s]탐색 실패",key);
+}
+
+
+void print_table(Node* ht[]){
+	Node*p;
+	int i;
+	for(i=0;i<TABLE_SIZE;i++){
+		printf("[%2d]",i);
+		for(p=ht[i];p!=NULL;p=p->link){
+			printf("%8s",p->key);
+		}
+		printf("\n");
+	
+	}
+	
+}
+
+void main(){  
+	Node* hash_table[TABLE_SIZE];
+	init_table(hash_table);
+	
+	insert_node(hash_table,"do","반복");
+	insert_node(hash_table,"for","반복");
+	insert_node(hash_table,"if","분기");
+	insert_node(hash_table,"case","분기");
+	insert_node(hash_table,"else","분기");
+	insert_node(hash_table,"return","반환");
+	insert_node(hash_table,"function","함수");
+	print_table(hash_table);
+	printf("\n");
+	getchar();
+	
+	search_node(hash_table,"return");
+	search_node(hash_table,"function");
+	search_node(hash_table,"class");
+	
+}
