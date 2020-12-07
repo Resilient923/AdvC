@@ -1,0 +1,290 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+#define SIZE 10
+#define INF 10000
+
+/* 크루스칼 최소신장 
+typedef struct{
+	int start,end,weight;
+	
+}Edge;
+
+typedef struct{
+	int n;
+	Edge edges[2*SIZE];
+}GraphType;
+
+void init_graph(GraphType *g){
+	int i;
+	g->n =0;
+	for(i=0;i<2*SIZE;i++){
+		g->edges[i].start = 0;
+		g->edges[i].end = 0;
+		g->edges[i].weight = INF;
+	}
+} 
+
+void insert_edge(GraphType *g,int start,int end,int weight){
+	
+	g->edges[g->n].start = start;
+	g->edges[g->n].end = end;
+	g->edges[g->n].weight = weight;
+	g->n++;
+}
+
+int parent[SIZE];
+
+void init_set(int n){
+	int i;
+	for(i=0;i<n;i++){
+		parent[i]=-1;
+	}
+	
+}
+
+int set_find(int curr){
+	if(parent[curr]==-1){
+		return curr;
+	}
+	while(parent[curr]!=-1){
+		curr = parent[curr];
+		
+	}
+	return curr;
+}
+
+void set_union(int a,int b){
+	int root1,root2;
+	root1 = set_find(a);
+	root2 = set_find(b);
+	if(root1!=root2){
+		parent[root1] = root2;
+	}
+}
+
+int compare(const void *a,const void *b){
+	
+	Edge* x = (Edge*)a;
+	Edge* y = (Edge*)b;
+	return (x->weight - y->weight); //wieght기준으로 sort함수정렬 
+}
+
+void kruskal(GraphType *g){
+	
+	int edge_accepted = 0;
+	int uset,vset;
+	Edge e;
+	
+	qsort(g->edges,g->n,sizeof(Edge),compare);
+	int i;
+	for(i=0;i<g->n;i++){
+		printf("(%d %d %d)\n",g->edges[i].start,g->edges[i].end,g->edges[i].weight);
+	} 
+	printf("\n");
+	getchar();
+	
+	printf("크루스칼 최소신장 트리 알고리즘\n");
+	init_set(g->n);
+	i = 0;
+	while(edge_accepted < g->n-1){
+		
+		e = g->edges[i];
+		uset = set_find(e.start);
+		vset = set_find(e.end);
+		if(uset != vset){
+			printf("간선(%d, %d, %d)가 선택\n",e.start,e.end,e.weight);
+			edge_accepted++;
+			set_union(uset,vset);
+		}
+		i++;
+	}
+	
+}
+
+void main(){
+	GraphType g;
+	init_graph(&g);
+	
+	insert_edge(&g,0,1,29);
+	insert_edge(&g,1,2,16);
+	insert_edge(&g,2,3,12);
+	insert_edge(&g,3,4,22);
+	insert_edge(&g,4,5,27);
+	insert_edge(&g,5,0,10);
+	insert_edge(&g,6,1,15);
+	insert_edge(&g,6,3,18);
+	insert_edge(&g,6,4,25);
+	int i;
+	for(i=0;i<g.n;i++){
+		printf("(%d %d %d)\n",g.edges[i].start,g.edges[i].end,g.edges[i].weight);
+	}
+	printf("\n");
+	getchar();
+	
+	kruskal(&g);
+	
+	
+}
+//PRIM 알고리즘 
+#define TRUE 1
+#define FALSE 0
+
+int selected[SIZE] = {FALSE};
+int distance[SIZE];
+
+typedef struct{
+	
+	int n;
+	int weight[SIZE][SIZE];
+	
+}GraphType;
+
+get_min_vertex(int n){
+	int v,i;
+	for(i=0;i<n;i++){
+		if(!selected[i]){
+			v = i;
+			break;
+		}
+	}
+	for(i=0;i<n;i++){
+		if(!selected[i] && (distance[i]<distance[v])){
+			v = i;
+		}
+	}
+	return v;
+}
+
+void prim(GraphType *g,int s){
+	int i,j,k;
+	for(i=0;i<g->n;i++){
+		distance[i] = INF;
+	}
+	distance[s] = 0;
+	for(j=0;j<g->n;j++){
+		i = get_min_vertex(g->n);
+		selected[i] = TRUE;	
+		if(distance[i]==INF){
+			return;
+		}
+		printf("정점 %d 방문\n",i);
+		for(k=0;k<g->n;k++){
+			if(g->weight[i][k]!=INF){
+				if(!selected[k]&&g->weight[i][k]<distance[k]){
+					distance[k] = g->weight[i][k];
+				}
+			}
+		}
+	}
+	
+}
+
+
+void main(){
+	GraphType g ={7,
+	{{0,29,INF,INF,INF,10,INF},
+	{29,0,16,INF,INF,INF,15},
+	{INF,16,0,12,INF,INF,INF},
+	{INF,INF,12,0,22,INF,18},
+	{INF,INF,INF,22,0,27,25},
+	{10,INF,INF,INF,27,0,INF},
+	{INF,15,INF,18,25,INF,0}}
+	};
+	
+	
+	
+	prim(&g,0);
+}
+*/
+//다익스트라 알고리즘
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h> 
+
+#define TRUE 1
+#define FALSE 0
+
+int selected[SIZE] = {FALSE};
+int distance[SIZE];
+
+typedef struct{
+	
+	int n;
+	int weight[SIZE][SIZE];
+	
+}GraphType;
+
+void print_status(GraphType *g){
+	static int step = 1;
+	printf("STEP %d :",step++);
+	printf("distance : ");
+	int i;
+	for(i=0;i<g->n;i++){
+		if(distance[i] == INF){
+			printf(" * ");
+		}
+		else{
+			printf("%2d",distance[i]);
+		}
+	}
+	printf("\n");
+	printf("        selected : ");
+	for(i=0;i<g->n;i++){
+		printf("%2d",selected[i]);
+	}
+	printf("\n\n");
+}
+
+int choose(int n){
+	int i,min,minpos;
+	min = INT_MAX;
+	minpos = -1;
+	
+	for(i=0;i<n;i++){
+		if(distance[i]<min && !selected[i]){
+			min = distance[i];
+			minpos = i; 
+		}
+	}
+	return minpos;
+}
+
+void shortest_path(GraphType *g,int s){
+	int i,j,k;
+	for(i=0;i<g->n;i++){
+		distance[i] = g->weight[s][i];
+	}
+	selected[s] = TRUE;
+	for(i=0;i<g->n;i++){
+		print_status(g);
+		j = choose(g->n);
+		
+		selected[j] = TRUE;
+		for(k=0;k<g->n;k++){
+			if(!selected[k]){
+				if(distance[j] + g->weight[j][k] < distance[k]){
+					distance[k] = distance[j] + g->weight[j][k];
+				}
+			}
+		}
+	}
+
+}
+
+
+void main(){
+	GraphType g ={7,
+	{{0,7,INF,INF,3,10,INF},
+	{7,0,4,10,2,6,INF},
+	{INF,4,0,2,INF,INF,INF},
+	{INF,10,2,0,11,9,4},
+	{3,2,INF,11,0,INF,5},
+	{10,6,INF,9,INF,0,INF},
+	{INF,INF,INF,4,5,INF,0}}
+	};
+	
+	
+	
+	shortest_path(&g,0);
+}
